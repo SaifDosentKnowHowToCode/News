@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Balanced Daily News</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      background: #000;
+      color: #111;
+      background-image: url(shit.avif);
+    }
+
+    header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #fff;
+  text-align: center;
+  padding: 25px 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  transition: padding 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+  will-change: padding;
+}
+
+header.shrink {
+  padding: 10px 10px;
+  background: #f8f8f8;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+header img {
+  width: 50px;
+  transition: width 0.25s ease;
+}
+
+header.shrink img {
+  width: 35px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2em;
+  transition: font-size 0.25s ease;
+}
+
+header.shrink h1 {
+  font-size: 1.4em;
+}
+
+/* ✅ FIXED THIS SECTION */
+header p {
+  color: #555;
+  margin: 6px 0 0;
+  font-size: 1em;
+  height: auto;
+  max-height: 2em;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.25s ease, max-height 0.25s ease;
+}
+
+header.shrink p {
+  opacity: 0;
+  max-height: 0; /* Collapses the space */
+  margin: 0;
+}
+
+
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+    .famous-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: 5.5rem;
+      font-style: italic;
+      color: #ffffff;
+      margin: 2rem auto 3rem;
+      max-width: 700px;
+      text-align: center;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .famous-quote .author {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: right;
+      color: #ffffff;
+    }
+
+    .shrink-quote {
+      opacity: 0.7;
+      transform: scale(0.98);
+    }
+
+    
+    main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    section {
+      flex: 1;
+      min-width: 300px;
+      max-width: 500px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    section h2 {
+      text-align: center;
+      margin-top: 0;
+      font-size: 1.4em;
+    }
+
+    article {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+    }
+
+    article:last-child { border-bottom: none; }
+
+    article a {
+      color: inherit;
+      text-decoration: none;
+      font-weight: 600;
+      display: block;
+      margin-top: 5px;
+    }
+
+    article a:hover { text-decoration: underline; }
+
+    small {
+      display: block;
+      color: #777;
+      font-size: 0.8em;
+      margin-top: 2px;
+    }
+
+    .outlet {
+      display: block;
+      font-weight: bold;
+      color: #555;
+      font-size: 0.8em;
+      margin-top: 2px;
+    }
+
+    img.news-img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 5px;
+      object-fit: cover;
+    }
+
+    @media (max-width: 900px) {
+      main { flex-direction: column; align-items: center; }
+      section { max-width: 90%; }
+    }
+  </style>
+</head>
+<body>
+  <header id="header">
+    <img src="b.png" alt="Logo">
+    <h1>Saifs News</h1>
+    <p>The World In Your Hands.</p>
+  </header>
+
+  <blockquote class="famous-quote" id="quote">
+    "An informed citizenry is at the heart of a dynamic democracy." <br>
+    <span class="author">— Thomas Jefferson</span>
+  </blockquote>
+
+  <main>
+    <section class="left" style="background-color: rgb(109, 109, 233);">
+      <h2 style="color: black;">Left-Leaning</h2>
+      <div id="left-news"></div>
+    </section>
+
+    <section class="center">
+      <h2>Center</h2>
+      <div id="center-news"></div>
+    </section>
+
+    <section class="right" style="background-color: rgb(245, 97, 97);">
+      <h2>Right-Leaning</h2>
+      <div id="right-news"></div>
+    </section>
+  </main>
+
+  <script>
+    const header = document.getElementById('header');
+    const quote = document.getElementById('quote');
+
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          if (scrollY > 60) {
+            header.classList.add('shrink');
+            quote.classList.add('shrink-quote');
+          } else {
+            header.classList.remove('shrink');
+            quote.classList.remove('shrink-quote');
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // --- fetching the newsss and shieeet ---
+    const rssFeeds = {
+      left: [
+        "https://www.theguardian.com/world/rss",
+        "http://rss.cnn.com/rss/edition_world.rss",
+        "https://www.vox.com/rss/index.xml",
+        "https://www.msnbc.com/feeds/latest",
+        "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
+      ],
+      center: [
+        "https://feeds.bbci.co.uk/news/world/rss.xml",
+        "https://www.reuters.com/rssFeed/worldNews",
+        "https://www.aljazeera.com/xml/rss/all.xml",
+        "https://apnews.com/rss/apf-topnews",
+        "https://www.bloomberg.com/feed/podcast/global_news.xml",
+        "https://www.politico.com/rss/politicopicks.xml",
+        "https://abcnews.go.com/abcnews/topstories"
+      ],
+      right: [
+        "http://feeds.foxnews.com/foxnews/world",
+        "https://www.telegraph.co.uk/news/rss.xml",
+        "https://www.washingtontimes.com/rss/headlines/news/world/",
+        "https://nypost.com/feed/"
+      ]
+    };
+
+    async function fetchFeed(url) {
+      const api = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
+      const res = await fetch(api);
+      return res.json();
+    }
+
+    async function loadCategory(feeds, containerId, count = 25) {
+      const container = document.getElementById(containerId);
+      container.textContent = "";
+
+      let articles = [];
+
+      await Promise.all(feeds.map(async feed => {
+        try {
+          const data = await fetchFeed(feed);
+          if (data.items) {
+            data.items.forEach(it => it.feedTitle = data.feed.title);
+            articles = articles.concat(data.items);
+          }
+        } catch (e) {
+          console.warn("Feed failed:", feed);
+        }
+      }));
+
+      articles.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+      const limited = articles.slice(0, count);
+
+      if (limited.length === 0) {
+        container.textContent = "⚠️ Couldn't load news.";
+        return;
+      }
+
+      for (const item of limited) {
+        const el = document.createElement("article");
+        let imgHTML = "";
+        if (item.thumbnail) imgHTML = `<img class="news-img" src="${item.thumbnail}" alt="">`;
+        else if (item.enclosure && item.enclosure.link) imgHTML = `<img class="news-img" src="${item.enclosure.link}" alt="">`;
+
+        el.innerHTML = `
+          ${imgHTML}
+          <a href="${item.link}" target="_blank">${item.title}</a>
+          <small>${new Date(item.pubDate).toLocaleString()}</small>
+          <span class="outlet">${item.feedTitle}</span>
+        `;
+        container.appendChild(el);
+      }
+    }
+
+    loadCategory(rssFeeds.left, "left-news");
+    loadCategory(rssFeeds.center, "center-news");
+    loadCategory(rssFeeds.right, "right-news");
+  </script>
+</body>
+</html>
